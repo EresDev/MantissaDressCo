@@ -1,0 +1,32 @@
+<?php
+$title = "Cart";
+$this->headTitle($title);
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearMessagesFromContainer();
+if(isset($_GET['update']) && $_GET['update'] == 'success'){
+    echo '<div class="alert alert-success" role="alert">Cart attributes updated successfully.</div>';
+}
+?>
+<h3><?php echo $title; ?></h3>
+<hr>
+<div class="row cart-page">
+<h4>Loading...</h4>
+</div>
+<?php
+$this->headScript()
+    ->prependFile($this->basePath() . '/catalog/js/cart.js');

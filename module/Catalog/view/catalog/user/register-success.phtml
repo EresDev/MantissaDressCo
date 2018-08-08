@@ -1,0 +1,76 @@
+<?php
+$title = "Register";
+$this->headTitle($title);
+$loginform = $this->loginform;
+
+?>
+<div class="row">
+    <div class="col-md-6 ares-box">
+        <h3>Success</h3>
+        <hr>
+        <p>
+        You account has been successfully created on <?php echo $this->settingHelper("site_name"); ?>
+        </p>
+        <p>
+        An email has been sent to you containing your temporary password.
+        </p>
+        <p>
+        Please use your email and password to login.
+        </p>
+        Happy shopping!
+    </div>
+    <div class="col-md-6 ">
+        <h4><?php echo "Login"; ?></h4>
+        <hr>
+
+        <?php echo $this->form()->openTag($loginform->setAttribute("action", $this->url("login", array(), array('force_canonical' => true)))); ?>
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($loginform->get('email'), null, false);
+            if ($this->formElementerrors($loginform->get('email'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($formlogin->get('email')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($loginform->get('password'), null, false);
+            if ($this->formElementerrors($loginform->get('password'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($formlogin->get('password')) . '</div>';
+            }
+            ?>
+        </div>
+        <div class="col-sm-12" style="text-align: right;">
+            <br>
+            <input type="button" class="btn btn-default" value="Clear" />
+            <?php
+            echo $this->formRow($loginform->get('submit'), null, false);
+            ?>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+<style>
+    label span, label input, label{
+        display: block;
+        width: 100% ;
+    }
+    label span{
+        font-weight: normal;
+    }
+    .ares-box{
+        border-right: 1px dotted #000;
+    }
+    .newsletter label span, .newsletter label input, .newsletter label{
+        display: inline;
+        width: auto;
+
+    }
+    .newsletter label input[type=checkbox]{
+        float: left;
+        margin-top: -7px;
+        margin-right: 5px;
+    }
+
+</style>

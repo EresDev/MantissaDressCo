@@ -1,0 +1,389 @@
+<?php
+$title = $this->entity->getTitle();
+$this->headTitle($title);
+if($this->entity){
+$this->headMeta($this->entity->getMetaDescription(), "description");
+$this->headMeta($this->entity->getMetaKeyword(), "keywords");
+}
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<div class="row">
+
+    <div class="col-sm-12 col-md-4">
+        <input type="hidden" id="product_id" value="<?php echo $this->entity->getProductId(); ?>" />
+        <?php
+        $image = $entity->getMainImage();
+        $img_dir = $this->settingHelper("images_dir");
+        $img_url = $this->basePath('img/default.png');
+
+        if ($image) {
+            if (strpos($image, $img_dir) === false) {
+                $image = $img_dir . "/" . $image;
+            }
+            $img_url = $this->settingHelper("site_url") . '/' . $image;
+
+
+        }
+        $thumb;
+        if (strpos($img_url, $img_dir) !== false) {
+            $thumb = str_replace($img_dir, $this->settingHelper("thumbs_dir"), $img_url);
+        }
+        ?>
+
+        <div class="simpleLens-gallery-container" id="demo-1">
+            <div class="simpleLens-container">
+                <div class="simpleLens-big-image-container">
+                    <a class="simpleLens-lens-image" data-lens-image="<?php echo $img_url; ?>">
+                        <img src="<?php echo $img_url; ?>" class="simpleLens-big-image">
+                    </a>
+                </div>
+            </div>
+
+            <div class="simpleLens-thumbnails-container">
+                <a href="#" class="simpleLens-thumbnail-wrapper"
+                   data-lens-image="<?php echo $img_url; ?>"
+                   data-big-image="<?php echo $img_url; ?>">
+                    <img src="<?php echo $thumb; ?>">
+                </a>
+                <?php
+                $img_dir = $this->settingHelper("images_dir");
+                $thumb_dir = $this->settingHelper("thumbs_dir");
+                foreach ($this->product_images as $image) {
+                    $image = $image->getImage();
+                    if (strpos($image, $img_dir) !== false) {
+                        $image = str_replace($img_dir . "/", "", $image);
+                    }
+                    ?>
+                    <a href="#" class="simpleLens-thumbnail-wrapper"
+                       data-lens-image="<?php echo $this->settingHelper("site_url") . "/" . ($img_dir . "/" . $image); ?>"
+                       data-big-image="<?php echo $this->settingHelper("site_url") . "/" . $img_dir . "/" . $image; ?>">
+                        <img src="<?php echo $this->settingHelper("site_url") . "/" . ($thumb_dir . "/" . $image); ?>">
+                    </a>
+                <?php
+                }
+                ?>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="col-sm-12 col-md-7 col-md-offset-1">
+        <h3><?php echo $title; ?></h3>
+        <hr>
+        <?php
+        if(!$this->entity->getEnabled()){
+            echo '<strong>This product is not available for sale at the moment.</strong><hr>';
+        }
+
+        ?>
+        <div class="row">
+            <?php
+            if(count($this->product_options) > 1) {
+            ?>
+            <div class=" col-xs-12 col-sm-4">
+            <div class="input-group">
+
+
+                <?php
+                    $first_time = true;
+                    foreach ($this->product_options as $option) {
+                        if(count($this->product_options) > 1 && $option->getAvailableQty() == 0){
+                            continue;
+                        }
+                        if($first_time) {
+                        $title = explode(" || ", $option->getOptionTitle());
+                if(count($title) == 2){
+                    ?>
+
+                <span class="input-group-addon"><?php echo $title[0]; ?> </span>
+                <select name="product_option" id="product_option" class="product_option form-control">
+
+                    <?php
+                }else {
+                ?>
+                        <span class="input-group-addon">Option: </span>
+                        <select name="product_option" id="product_option" class="product_option form-control">
+
+                <?php } $first_time = false; }
+                $title = explode(" || ", $option->getOptionTitle());
+                        echo '<option value="' . $option->getOptionTitle() . '">' . (count($title) == 2? $title[1]:$option->getOptionTitle() ). '</option>';
+                    }
+                    ?>
+                </select>
+
+            </div>
+            </div>
+            <?php
+            } else {
+                echo '<input type="hidden" name="product_option" id="product_option" class="product_option" value="' . $this->product_options[0]->getOptionTitle() . '"/>';
+            }
+            ?>
+            <div class=" col-xs-12 col-sm-4">
+            <div class="input-group">
+                <span class="input-group-addon">Qty: </span>
+          <span class="input-group-btn">
+
+            <button class="btn btn-default" type="button" id="qty-minus">-</button>
+          </span>
+                <input name="order_qty" id="order_qty" class="form-control order_qty" type="text" value="1"/>
+            <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="qty-plus">+</button>
+          </span>
+            </div>
+
+        </div>
+            <?php
+            if(count($this->product_options) > 1) {
+            ?>
+            <div class=" col-xs-12 col-sm-4">
+           <?php }else { ?>
+            <div class=" col-xs-12 col-sm-8">
+            <?php } ?>
+                <button class="btn btn-default spe-btn" id="add_to_cart_btn" <?php echo (!$this->entity->getEnabled()?'disabled':''); ?> >Add to Cart</button>
+
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+
+        <?php
+        $avail = 'Out of Stock';
+        $index = 0;
+        foreach ($this->product_options as $option) {
+            if ($option->getAvailableQty() == -1) {
+                $avail = "In Stock";
+                break;
+            } else if ($option->getAvailableQty() > 0) {
+                $avail = $option->getAvailableQty() ;
+                break;
+            }
+            ++$index;
+        }
+        ?>
+        <strong>Availability: </strong><span class="available_qty"><?php echo $avail; ?></span><br>
+        <strong>Unit Price: </strong><span
+            class="price"><?php echo $this->settingHelper("currency_prefix") .'<span class="unit-price">' .number_format((float)$this->entity->getPrice(), 2, '.', '').'</span>' . $this->settingHelper("currency_postfix"); ?>
+            </span>
+            <br>
+            <strong>Barcode: </strong><span><?php echo $entity->getBarcode(); ?></span>
+            <br>
+            <?php
+            if($entity->getCategory()){ ?>
+            <strong>Category: </strong><span><a href="<?php echo $this->url('products', array('category_id' => $entity->getCategory()->getCategoryId())); ?>"><?php echo $entity->getCategory()->getTitle(); ?></a></span>
+            <?php } ?>
+            <p></p>
+            <?php echo $this->entity->getDescription(); ?>
+
+
+        <p></p>
+        <hr>
+            <?php echo $this->settingHelper("below_product"); ?>
+            <hr>
+            <?php
+            if(count($this->paginator) != 0){
+?>
+                <h4>Reviews</h4>
+                <hr>
+                <?php
+            }
+            foreach($this->paginator as $review){
+                ?>
+
+                <div class="ares-enclose col-sm-12">
+                    <div><strong><?php echo $review->getReviewerName(); ?></strong></div>
+                    <div>
+                        <?php
+                        for($i=0; $i<$review->getStars(); ++$i){
+                            echo '<img src="'.$this->basePath('img/star.png').'"/>';
+                        }
+                        ?>
+                    </div>
+                    <div>
+                        <?php echo $review->getReview(); ?>
+                    </div>
+                </div>
+
+
+            <?php } ?>
+            <?php
+            $form = $this->form;
+            echo $this->form()->openTag($form);
+            ?>
+            <div class="well row">
+            <div class=" col-sm-12">
+                <h4>Submit Your Review</h4><hr>
+            <label>Your Name *
+            <?php
+            echo $this->formRow($form->get('reviewerName')->setAttribute("class", "form-control"), null, false);
+            if ($this->formElementerrors($form->get('reviewerName'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('reviewerName')) . '</div>';
+            }
+            ?></label>
+            <label>Rating *</label>
+                Bad
+                <input type="radio" value="1" name="stars">
+                <input type="radio" value="2" name="stars">
+                <input type="radio" value="3" name="stars">
+                <input type="radio" value="4" name="stars">
+                <input type="radio" value="5" name="stars" checked="checked"> Good
+
+
+                <label>Your Review *
+                <?php
+
+                echo $this->formRow($form->get('review')->setAttribute("class", "form-control"), null, false);
+                if ($this->formElementerrors($form->get('review'))) {
+                    echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('review')) . '</div>';
+                }
+                echo $this->formRow($form->get('csrf'), null, false);
+                if ($this->formElementerrors($form->get('csrf'))) {
+                    echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('csrf')) . '</div>';
+                }
+
+
+            ?></label>
+
+            <label>Verify you are human *
+                <?php
+                echo $this->formRow($form->get('captcha')->setAttribute("class", "form-control"), null, false);
+                if ($this->formElementerrors($form->get('captcha'))) {
+                    echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('captcha')) . '</div>';
+                }
+                ?>
+            </label>
+            <input type="submit" value="Submit" class="btn btn-default"/>
+            </div>
+            </div>
+            <?php
+            echo $this->form()->closeTag();
+            ?>
+            <?php // add at the end of the file after the table
+            echo $this->paginationControl(
+                // the paginator object
+                $this->paginator,
+                // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                'sliding',
+                // the partial to use to render the control
+                array('partial/catalog-review-paginator.phtml', 'Reviews'),
+                // the route to link to when a user clicks a control link
+                array(
+                    'route' =>  $this->route,
+                    'product_id' => $this->product_id
+                )
+            );
+            ?>
+    </div>
+
+
+</div>
+<script>
+    var product_options_title = [];
+    var product_options_qty = [];
+    <?php
+    $counter = 0;
+    foreach($this->product_options as $k => $option){
+        if(count($this->product_options) > 1 && $option->getAvailableQty() == 0){
+            continue;
+        }
+    ?>
+    product_options_title[<?php echo $counter; ?>] = "<?php echo $option->getOptionTitle(); ?>";
+    product_options_qty[<?php echo $counter; ?>] = "<?php echo $option->getAvailableQty(); ?>";
+    <?php
+    ++$counter;
+    }
+    ?>
+
+
+</script>
+<style>
+    .product_image {
+        width: 100%;
+        height: auto;
+    }
+
+    .product_option {
+        min-width: 150px !important;
+
+    }
+    label span, label input, label{
+        display: block;
+        width: 100% ;
+    }
+    label{
+        font-weight: normal;
+    }
+
+
+
+
+    .spe-btn {
+        float: right;
+    }
+    .qty_div{
+        float: left;
+    }
+    .ares-enclose{
+        border-bottom: thin dotted;
+    }
+</style>
+<?php
+$this->headLink()
+    ->prependStylesheet($this->basePath() . '/catalog/plugins/Magnifier/css/jquery.simpleGallery.css')
+    ->prependStylesheet($this->basePath() . '/catalog/plugins/Magnifier/css/jquery.simpleLens.css');
+$this->headScript()
+    ->prependFile($this->basePath() . '/catalog/js/add-to-cart.js')
+
+    ->prependFile($this->basePath() . '/catalog/plugins/Magnifier/src/jquery.simpleLens.js')
+    ->prependFile($this->basePath() . '/catalog/plugins/Magnifier/src/jquery.simpleGallery.js');
+?>
+<script>
+    $(document).ready(function () {
+
+            $('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
+                loading_image: '<?php echo $this->basePath("img/loading.gif"); ?>'
+            });
+
+            $('#demo-1 .simpleLens-big-image').simpleLens({
+                loading_image: '<?php echo $this->basePath("img/loading.gif"); ?>'
+            });
+        $("#qty-plus").click(function(){
+            var order_qty = parseInt($("#order_qty").val());
+            if(isNaN(order_qty) || order_qty <= 0){
+                $("#order_qty").val(1);
+            }
+            else{
+                $("#order_qty").val(++order_qty);
+            }
+        });
+        $("#qty-minus").click(function(){
+            var order_qty = parseInt($("#order_qty").val());
+            if(isNaN(order_qty) || order_qty <= 1){
+                $("#order_qty").val(1);
+            }
+            else{
+                $("#order_qty").val(--order_qty);
+            }
+        });
+
+
+
+    });
+</script>

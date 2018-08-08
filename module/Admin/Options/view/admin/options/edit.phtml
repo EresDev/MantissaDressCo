@@ -1,0 +1,127 @@
+<?php
+
+$title = "Edit Options";
+$this->headTitle($title);
+?>
+<form id="entityform" method="post" action="">
+<h4>Options >> Add<span style="float:right;">
+
+        <input class="btn btn-primary" type="submit" value="Save" />
+        <a class="btn btn-default" href="<?php echo $this->url("admin-options"); ?>">Cancel</a></span></h4>
+<hr>
+NOTE: To remove an option, leave value in option text field empty.<hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+
+    <label>
+        <span>Options Group Title</span>
+        <input type="text" name="name" class="form-control" value="<?php echo $this->entity->getName(); ?>"/>
+    </label>
+
+    <?php foreach($this->entities as $entity) { ?>
+    <label>
+        <span>Option</span>
+        <input type="text" name="option_name[]" class="option_name form-control" value="<?php echo stripslashes($entity->getOptionName()); ?>"/>
+    </label>
+    <?php }  ?>
+    <input type="button" value="+ Add Another Option" onclick="addAnotherOption(); " class="form-control" />
+</form>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .label-txt {
+        padding: 0px 15px ;
+    }
+    .thumb-container{
+        padding: 10px;
+    }
+    input[type=checkbox]{
+        float: left;display: inline; width: auto !important;
+    }
+
+</style>
+<script>
+    $(document).ready(function(){
+       $("#entityform").submit(function(){
+           var testArray = [];
+           if($("input[name=name]").val().replace(/ /g,'') == ""){
+               alert("Option Group Title is required.");
+               $("input[name=name]").focus();
+               return false;
+           }
+          $(".option_name").each(function(){
+            if($(this).val().replace(/ /g,'') == ""){
+                $(this).parent().remove();
+                return;
+            }
+              testArray.push($(this).val().replace(/ /g,'') );
+          });
+           if($(".option_name").length == 0){
+               alert("You must have to add at-least one option.");
+               return false;
+           }
+           if(checkIfArrayIsUnique(testArray)){
+               alert("Given options are not unique. Some values are duplicate excluding white characters. Duplicate values are not allowed. Try again.");
+               return false;
+           }
+       });
+    });
+function addAnotherOption(){
+    var html = '<label><span>Option</span><input type="text" name="option_name[]" class="option_name form-control"/></label>';
+
+    $("#entityform").children(":last").before(html);
+}
+function checkIfArrayIsUnique(myArray)
+{
+    for (var i = 0; i < myArray.length; i++)
+    {
+        for (var j = 0; j < myArray.length; j++)
+        {
+            if (i != j)
+            {
+                if (myArray[i] == myArray[j])
+                {
+                    return true; // means there are duplicate values
+                }
+            }
+        }
+    }
+    return false; // means there are no duplicate values.
+}
+</script>

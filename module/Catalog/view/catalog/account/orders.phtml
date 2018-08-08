@@ -1,0 +1,113 @@
+<?php
+$title = "Orders";
+$this->headTitle($title);
+
+?>
+
+
+    <div class="row">
+        <h3>Orders</h3>
+
+        <?php
+        $count = count($this->paginator);
+        if ($count == 0) {
+            echo 'You have not placed any order yet.';
+        } else {
+            $orders = $this->paginator;
+            foreach ($orders as $i => $order) {
+
+                ?>
+                <div class="">
+
+                    <table class="table table-responsive table-bordered">
+                        <tr class="active">
+                            <th colspan="3"><?php echo 'Order ID: ' . $order->getOrderId(); ?></th>
+                        </tr>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                        <?php
+                        $total = 0.0;
+                        foreach ($this->products[$i] as $product) {
+                            $total += ($product->getQuantity() * $product->getUnitPrice());
+                            ?>
+                            <tr>
+                                <td>
+                                    <?php if($product->getProduct()){ ?>
+                                    <a href="<?php echo $this->url('product', array('product_id' => $product->getProduct()->getProductId()));?>" ><?php echo $product->getProduct()->getTitle(); ?></a>
+                                    <?php } else { ?>
+                                        <?php echo $product->getProductOptionTitle(); ?>
+                                    <?php } ?>
+
+                                </td>
+                                <td><?php echo $product->getQuantity(); ?></td>
+                                <td><?php echo $product->getQuantity(); ?>x<?php echo $product->getUnitPrice(); ?>
+                                    = <?php echo number_format((float)($product->getQuantity() * $product->getUnitPrice()), 2, '.', ''); ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                        <tr>
+                            <td colspan="3" class="text-right">
+                                Total: <?php echo $this->settingHelper("currency_prefix") . number_format((float)($total), 2, '.', '') . $this->settingHelper("currency_postfix"); ?></td>
+                        </tr>
+
+
+                        <tr>
+                            <th colspan="3">Shipping Details</th>
+
+                        </tr>
+                        <tr>
+                            <td colspan="3"><?php echo $this->address->getAddress1(); ?></td>
+                        </tr>
+
+                        <?php if ($this->address->getAddress2()) { ?>
+                            <tr>
+                                <td colspan="3"><?php echo $this->address->getAddress1(); ?></td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <td colspan="3">
+                                <?php echo $this->address->getCity() . ","; ?>
+                                <?php if ($this->address->getPostcode()) {
+                                    echo $this->address->getPostcode() . ",";
+                                } ?>
+                                <?php echo $this->address->getState() . ","; ?>
+                                <?php echo $this->address->getCountry(); ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" class="text-right">
+                                <strong>Order Status: </strong><?php echo $this->settingHelper("order_status_".((int)$order->getOstatus())); ?>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            <?php
+            }
+        }
+        ?>
+    </div>
+
+
+
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->paginator,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/catalog-orders-paginator.phtml', 'Product'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'account'
+    )
+);
+?>
+<div style="clear:both"></div>

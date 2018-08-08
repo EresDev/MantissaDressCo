@@ -1,0 +1,202 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <?php echo $this->headTitle($this->settingHelper("site_name"))->setSeparator(' - ')->setAutoEscape(false) ?>
+    <?php echo $this->headMeta()
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+    ?>
+    <!-- Le styles -->
+    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/owl.carousel/owl-carousel/owl.theme.css')
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/owl.carousel/owl-carousel/owl.carousel.css')
+
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/jquery-notif/ui.notify.css')
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/PgwSlider/pgwslider.css')
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/fancybox/source/jquery.fancybox.css')
+        ->prependStylesheet($this->basePath() . '/catalog/css/custom.css')
+        ->prependStylesheet($this->basePath() . '/js/jquery-ui-1.11.1/jquery-ui.min.css')
+        ->prependStylesheet($this->basePath() . '/catalog/plugins/bootstrap-3.2.0/css/bootstrap.css')
+        ?>
+    <!-- Scripts -->
+    <?php echo $this->headScript()
+        ->prependFile($this->basePath() . '/catalog/plugins/owl.carousel/owl-carousel/owl.carousel.js')
+        ->prependFile($this->basePath() . '/catalog/plugins/jquery-notif/src/jquery.notify.js')
+
+        ->prependFile($this->basePath() . '/catalog/plugins/PgwSlider/pgwslider.js')
+        ->prependFile($this->basePath() . '/catalog/plugins/fancybox/source/jquery.fancybox.js')
+        ->prependFile($this->basePath() . '/catalog/js/custom.js')
+        ->prependFile($this->basePath() . '/catalog/plugins/responsiveCarousel/responsiveCarousel.js')
+        ->prependFile($this->basePath() . '/js/jquery-ui-1.11.1/jquery-ui.min.js')
+
+        ->prependFile($this->basePath() . '/catalog/plugins/bootstrap-3.2.0/js/bootstrap.js')
+        ->prependFile($this->basePath() . '/js/jquery.min.js')
+    ; ?>
+
+
+    <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+<script>
+    var js_urls = {
+        cart_summary_url:'<?php echo $this->url("cart", array('action' => 'summary'), array("force_canonical" => true)); ?>',
+        product_url:'<?php echo $this->url("product", array(), array("force_canonical" => true)); ?>',
+        cart_url:'<?php echo $this->url("cart", array(), array("force_canonical" => true)); ?>',
+        add_to_cart_url:'<?php echo $this->url("cart", array("action" => "add"), array("force_canonical" => true)); ?>',
+        remove_img_url:'<?php echo $this->basePath("img/remove.png"); ?>',
+        checkout_url:'<?php echo $this->url("checkout", array(), array("force_canonical" => true)); ?>'
+
+    };
+    var js_setting = {
+        images_dir: '<?php echo $this->settingHelper('images_dir'); ?>',
+        thumbs_dir: '<?php echo $this->settingHelper('thumbs_dir'); ?>',
+        site_url: '<?php echo $this->settingHelper('site_url'); ?>',
+        currency_prefix: '<?php echo $this->settingHelper('currency_prefix'); ?>',
+        currency_postfix: '<?php echo $this->settingHelper('currency_postfix'); ?>'
+    };
+
+</script>
+</head>
+<body>
+<div class="container">
+
+    <header class="row">
+        <div class="col-xs-6 col-sm-3">
+            <a href="<?php echo $this->url('home'); ?>">
+                <img class="logo" src="<?php echo $this->basePath('img/logo.jpg') ?>" alt="Mantissa Dress Co."/>
+            </a>
+
+        </div>
+        <div class="col-xs-6 col-sm-9 text-right">
+            <div class="row">
+                <span class="top-info visible-sm-inline visible-lg-inline"><img src="<?php echo $this->basePath('catalog/img/phone.png') ?>"><?php echo $this->settingHelper("phone_number"); ?></span>
+                <span class="top-info visible-sm-inline visible-lg-inline"><img src="<?php echo $this->basePath('catalog/img/email.png') ?>"><?php echo $this->settingHelper("site_email"); ?></span>
+                <span class="top-info"><img src="<?php echo $this->basePath('catalog/img/question.png') ?>"><a href="#why-us-info" id="why-us" data-lightbox="image-1" data-title="My caption">Why Us</a></span>
+                <div style="display: none;">
+                    <div id="why-us-info" style="width: 320px;">
+                        <h1>Why Us?</h1><hr>
+                        <?php echo $this->settingHelper("why_us"); ?>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                
+
+
+                <div class="cart-container">
+                    <a class="shopping-cart" href="javascript:;">
+                        <h5>
+                            <img src="<?php echo $this->basePath('catalog/img/cart.png') ?>"><span class="cart-text">Shopping Cart <span class="caret"></span></span>
+                            <br>
+                            <span class="cart-qty">
+                                <?php $qty = $this->cartHelper("items");?>
+                                <span id="cart-qty"><?php echo $qty; ?></span>
+                                <span id="cart-qty-text"> <?php echo $qty > 1 ? "items" : "item"; ?></span>
+                                <span> - <?php echo $this->settingHelper("currency_prefix"); ?></span>
+                                <span id="cart-price"><?php echo number_format((float)$this->cartHelper("cost"), 2, '.', '');?></span>
+                                <span><?php echo $this->settingHelper("currency_postfix"); ?></span>
+                            </span>
+                        </h5>
+                    </a>
+                    <div class="cart-box">
+                        <h4>Loading...</h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+    <div class="row">
+        <?php $partial = array('partial/navigation/catalog.phtml', 'default') ?>
+        <?php $this->navigation('catalog-navigation')->menu()->setPartial($partial) ?>
+        <?php echo $this->navigation('catalog-navigation')->menu()->render() ?>
+    </div>
+
+
+    <?php echo $this->content; ?>
+
+    <hr>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <h3>Information</h3>
+            <ul>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 6)); ?>">About Us</a></li>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 7)); ?>">Delivery Information</a></li>
+                <li><a href="<?php echo $this->url('category'); ?>">Categories</a></li>
+
+            </ul>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <h3>Customer Service</h3>
+            <ul>
+                <li><a href="<?php echo $this->url('contact', array()); ?>">Contact Us</a></li>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 8)); ?>">Returns</a></li>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 12)); ?>">Site Map</a></li>
+
+            </ul>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <h3>My Account</h3>
+            <ul>
+                <li><a href="<?php echo $this->url('account'); ?>">My Account</a></li>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 9)); ?>">Newsletter</a></li>
+
+            </ul>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <h3>Legal</h3>
+            <ul>
+
+                <li><a href="<?php echo $this->url('information', array('information_id' => 10)); ?>">Privacy Policy</a></li>
+                <li><a href="<?php echo $this->url('information', array('information_id' => 11)); ?>">Terms & Conditions</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div class="row text-center">
+        <span style="float:left;"><?php echo $this->settingHelper("footer_content"); ?></span>
+        <span style="float:right;">
+            <a class="social" href="<?php echo $this->settingHelper('facebook'); ?>" target="_blank">
+                <img src="<?php echo $this->basePath('catalog/img/facebook.png'); ?>" />
+            </a>
+
+             <a class="social" href="<?php echo $this->settingHelper('linkedin'); ?>" target="_blank">
+                 <img src="<?php echo $this->basePath('catalog/img/linkedin.png'); ?>" />
+             </a>
+             <a class="social" href="<?php echo $this->settingHelper('googleplus'); ?>" target="_blank">
+                 <img src="<?php echo $this->basePath('catalog/img/google.png'); ?>" />
+             </a>
+            <a class="social" href="<?php echo $this->settingHelper('twitter'); ?>" target="_blank">
+                <img src="<?php echo $this->basePath('catalog/img/twitter.png'); ?>" />
+            </a>
+        </span>
+    </div>
+</div>
+
+
+<!-- set the container hidden to avoid a flash of unstyled content
+when the page first loads -->
+<div id="notification" style="display:none">
+    <!--
+    Later on, you can choose which template to use by referring to the
+    ID assigned to each template.  Alternatively, you could refer
+    to each template by index, so in this example, "basic-tempate" is
+    index 0 and "advanced-template" is index 1.
+    -->
+    <div id="basic-template">
+        <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+        <h1>#{title}</h1>
+        <p>#{text}</p>
+    </div>
+
+    <div id="advanced-template">
+        <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+        <h1>#{title}</h1>
+        <p>#{text}</p>
+    </div>
+</div>
+
+
+
+</body>
+</html>

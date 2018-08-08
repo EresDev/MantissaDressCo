@@ -1,0 +1,142 @@
+<?php
+
+$title = "Login";
+$this->headTitle($title);
+
+?>
+
+<div class="row">
+
+
+
+    <div class="" style="width: 300px;margin: 0 auto;">
+        <?php if ($this->invalid_credentials) { ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $this->invalid_credentials; ?>
+            </div>
+        <?php } ?>
+        <br>
+        <?php
+        $form = $this->loginform;
+        $form->setAttribute('action', $this->url('admin', array('action' => 'login')));
+        $form->setAttribute('class', 'well');
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        echo $this->formRow($form->get('username'));
+        echo $this->formRow($form->get('password'));
+        echo $this->formRow($form->get('submit')->setAttribute('class', 'btn btn-default'));
+        echo $this->form()->closeTag();
+        ?>
+        <div class="alert alert-info" role="alert"><a href="javascript:;" onclick="forgotPass(this);"> Forgot your password?</a></div>
+    </div>
+</div>
+<style>
+    #loginform label span, #loginform > input {
+        display: block;
+        width: 100%;
+    }
+
+    #loginform > label {
+        width: 100%;
+    }
+
+    #loginform > label > input {
+        width: 100%;
+    }
+    #loginform > ul > li{
+        color: red;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+       $("form").submit(function(){
+           $("#loginform > ul").remove();
+           $(".alert-danger").remove();
+           var user = $("input[name=username]").val().replace(/\s/g, "");
+           var pass = $("input[name=password]").val().replace(/\s/g, "");
+           if (user == ""){
+               showError("Username is required!", $("input[name=username]").get());
+               return false;
+           }
+           if (user.length < 5){
+               showError("Username cannot be less than 5 characters!", $("input[name=username]").get());
+               return false;
+           }
+           if(pass == ""){
+               showError("Password is required!", $("input[name=password]").get());
+               return false;
+           }
+
+           if(pass.length < 5){
+               showError("Password cannot be less than 5 characters!", $("input[name=password]").get());
+               return false;
+           }
+
+       });
+    });
+function forgotPass(_obj){
+    var html = '<form id="loginform" class="well"><label><span>Your Username:</span><input type="text" value="" name="username" class="form-control"></label><label><span>Your Email Address: </span><input type="text" value="" name="email" class="form-control"></label><input type="button" value="Reset Password" class="btn btn-default" onclick="forgotPass2(this);"></form>';
+    $('#loginform').replaceWith(html);
+    $(_obj).replaceWith('<a href="<?php echo $this->url('admin', array('action' => 'login')); ?>">Login</a>');
+}
+function forgotPass2(_obj){
+    $('.alert-danger').remove();
+    $('.alert-success').remove();
+    var user = $("input[name=username]").val().replace(/\s/g, "");
+    var eml = $("input[name=email]").val().replace(/\s/g, "");
+    if(user == ''){
+        showError('Username is required.', $("input[name=username]").get());
+        return false;
+    }
+    if(user.length < 5){
+        showError('Username cannot be less than 5 characters.', $("input[name=username]").get());
+        return false;
+    }
+    if(eml == ''){
+        showError('Email is required.', $("input[name=email]").get());
+        return false;
+    }
+    if(!validateEmail(eml)){
+        showError('Email is not valid.', $("input[name=email]").get());
+        return false;
+    }
+    $(_obj).attr("disabled", "disabled");
+    $.ajax({
+        type: "POST",
+        url: '<?php echo $this->url('admin', array('action' => 'forgot'), array('force_canonical' => true)); ?>',
+        data: { username:user, email:eml },
+        beforeSend: function( xhr ) {
+            $(_obj).parent().append('<div class="alert alert-warning ares-working">Working...</div>');
+
+        }
+    }).done(function( msg ) {
+
+        if(msg.status == "success"){
+            $(_obj).parent().append('<div class="alert alert-success">'+msg.message+'</div>');
+            $("input[name=username]").val("");
+            $("input[name=email]").val("");
+        }
+        else if(msg.status == 'error'){
+            $(_obj).parent().append('<div class="alert alert-danger">'+msg.message+'</div>');
+        }
+        else{
+            alert("There was an error in response from server. Try again by refreshing the page.");
+
+        }
+        $(_obj).removeAttr("disabled");
+
+    }).fail(function(msg){
+        alert("There was an error while contacting from server. Try again by refreshing the page.");
+    }) .always(function() {
+        $(".ares-working").remove();
+    });
+}
+    function showError(msg, ele){
+        $(ele).parent().parent().append('<div class="alert alert-danger">'+msg+'</div>');
+    }
+function validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+</script>
+

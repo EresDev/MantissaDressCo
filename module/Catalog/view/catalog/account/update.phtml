@@ -1,0 +1,164 @@
+<?php
+$title = "Update Personal Information";
+$this->headTitle($title);
+$form = $this->form;
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<div class="row">
+    <div class="ares-box">
+        <h3><?php echo $title; ?></h3>
+        <hr>
+        <p>Fields marked with * are required.</p>
+        <hr>
+        <?php echo $this->form()->openTag($form); ?>
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('firstname'), null, false);
+            if ($this->formElementerrors($form->get('firstname'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('firstname')) . '</div>';
+            }
+            ?>
+
+        </div>
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('lastname'), null, false);
+            if ($this->formElementerrors($form->get('lastname'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('firstname')) . '</div>';
+            }
+            ?>
+
+        </div>
+
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('address1'), null, false);
+            if ($this->formElementerrors($form->get('address1'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('address1')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('address2'), null, false);
+            if ($this->formElementerrors($form->get('address2'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('address2')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('telephone'), null, false);
+            if ($this->formElementerrors($form->get('telephone'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('telephone')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('city'), null, false);
+            if ($this->formElementerrors($form->get('city'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('city')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('postcode'), null, false);
+            if ($this->formElementerrors($form->get('postcode'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('postcode')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-6">
+            <?php
+            echo $this->formRow($form->get('state'), null, false);
+            if ($this->formElementerrors($form->get('state'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('state')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('country'), null, false);
+            if ($this->formElementerrors($form->get('country'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('country')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('csrf'), null, false);
+            if ($this->formElementerrors($form->get('csrf'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('csrf')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12 newsletter">
+            <?php
+            echo $this->formRow($form->get('newsletter'), null, false);
+            if ($this->formElementerrors($form->get('newsletter'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('newsletter')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12" style="text-align: right;">
+            <br>
+            <input type="button" class="btn btn-default" value="Clear" onclick="clearInputs(this);" />
+            <?php
+            echo $this->formRow($form->get('submit'), null, false);
+            ?>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+
+</div>
+<div style="clear:both"></div>
+<style>
+    label span, label input, label{
+        display: block;
+        width: 100% ;
+    }
+    label span{
+        font-weight: normal;
+    }
+
+    .newsletter label span, .newsletter label input, .newsletter label{
+        display: inline;
+        width: auto;
+
+    }
+    .newsletter label input[type=checkbox]{
+        float: left;
+        margin-top: -7px;
+        margin-right: 5px;
+    }
+
+</style>

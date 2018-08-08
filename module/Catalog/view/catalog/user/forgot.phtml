@@ -1,0 +1,110 @@
+<?php
+$title = "Password Reset";
+$this->headTitle($title);
+$form = $this->form;
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+
+<div class="row">
+    <div class="col-md-6 ares-box">
+        <h3><?php echo $title; ?></h3>
+        <hr>
+
+        <?php echo $this->form()->openTag($form); ?>
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('email'), null, false);
+            if ($this->formElementerrors($form->get('email'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('email')) . '</div>';
+            }
+            ?>
+        </div>
+
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('captcha'), null, false);
+            if ($this->formElementerrors($form->get('captcha'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('captcha')) . '</div>';
+            }
+            ?>
+        </div>
+        <div class="col-sm-12">
+            <?php
+            echo $this->formRow($form->get('csrf'), null, false);
+            if ($this->formElementerrors($form->get('csrf'))) {
+                echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($form->get('csrf')) . '</div>';
+            }
+            ?>
+        </div>
+        <div class="col-sm-12" style="text-align: right;">
+            <br>
+
+
+            <input type="button" class="btn btn-default" value="Clear" onclick="clearInputs(this);" />
+            <?php
+            echo $this->formRow($form->get('submit'), null, false);
+            ?>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+        <div style="clear:both;"></div>
+
+
+
+    </div>
+
+    <div class="col-md-6">
+        <h4>Don't have an account?</h4>
+        <hr>
+        <p>By creating an account, you will be able to </p>
+        <ul>
+            <li>Shop faster</li>
+            <li>Track your orders</li>
+            <li>Get free newsletters</li>
+            <li>Get discounts</li>
+        </ul>
+        <a href="<?php echo $this->url('register', array(), array('force_canonical' => true)); ?>" class="btn btn-default" style="float:right;">Create an account</a>
+
+    </div>
+
+</div>
+<style>
+    label span, label input, label{
+        display: block;
+        width: 100% ;
+    }
+    label span{
+        font-weight: normal;
+    }
+    .ares-box{
+        border-right: 1px dotted #000;
+    }
+    .newsletter label span, .newsletter label input, .newsletter label{
+        display: inline;
+        width: auto;
+
+    }
+    .newsletter label input[type=checkbox]{
+        float: left;
+        margin-top: -7px;
+        margin-right: 5px;
+    }
+
+</style>

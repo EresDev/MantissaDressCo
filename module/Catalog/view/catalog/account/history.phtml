@@ -1,0 +1,31 @@
+<?php
+$title = "Login History";
+$this->headTitle($title);
+
+?>
+<div class="row">
+    <h3><?php echo $title; ?></h3>
+    <hr>
+    <p>The login history includes up-to 100 last logins details.</p>
+    <table class="table table-responsive table-bordered">
+        <tr>
+            <th>Datetime</th>
+            <th>IP Address</th>
+        </tr>
+        <?php
+        foreach($this->history as $history){
+            ?>
+            <tr>
+                <td>
+                    <?php echo $history->getDateTime()->format('l, F d Y h:i A'); ?>
+                </td>
+                <td>
+                    <?php echo $history->getIp(); ?>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+    </table>
+</div>
+<div style="clear:both"></div>

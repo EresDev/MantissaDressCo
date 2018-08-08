@@ -1,0 +1,98 @@
+<?php
+$this->headTitle("Home");
+$featured = $this->featured;
+$new_arrival = $this->new_arrival;
+if ($featured) {
+    ?>
+    <div class="row">
+
+        <ul class="pgwSlider">
+            <?php foreach ($featured as $product) {
+
+                ?>
+                <li class="ares-item">
+                    <a href="<?php echo $this->url('product', array('product_id' => $product->getProductId())); ?>">
+                        <img
+                            src="<?php echo $this->basePath($this->settingHelper("images_dir") . "/" . $product->getMainImage()); ?>"
+                            alt="<?php echo $product->getTitle(); ?>"
+                            data-description="<?php echo $this->settingHelper("currency_prefix") . number_format((float)$product->getPrice(), 2, '.', '') . $this->settingHelper("currency_postfix"); ?>">
+                        <h4>Dress Shirt</h4>
+                    </a>
+                </li>
+            <?php } ?>
+
+        </ul>
+
+
+    </div>
+<?php
+}
+if ($new_arrival) {
+    ?>
+    <div class="row">
+        <div><h2>New Arrival</h2></div>
+
+
+        <div id="owl-example" class="owl-carousel">
+            <?php foreach ($new_arrival as $product) { ?>
+                <div class="single-item">
+                    <a href="<?php echo $this->url('product', array('product_id' => $product->getProductId())); ?>">
+                    <img src="<?php echo $this->basePath($this->settingHelper("thumbs_dir") . "/" . $product->getMainImage()); ?>"/>
+                    <?php echo $product->getTitle(); ?><br>
+                    <strong><?php echo $this->settingHelper("currency_prefix") . number_format((float)$product->getPrice(), 2, '.', '') . $this->settingHelper("currency_postfix"); ?></strong>
+                </a>
+                </div>
+
+            <?php } ?>
+        </div>
+    </div>
+    <style>
+        .single-item{
+            width: 122px;
+        }
+        .ps-current, .ares-item{
+            font-size: 15px !important;
+        }
+    </style>
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#owl-example").owlCarousel();
+
+        });
+    </script>
+<?php } ?>
+<br>
+<div class="row" style="background: #000;">
+    <div class="col-sm-6" style=" ">
+        <h3 style="color:#fff;">
+            Download our Smart Phone Application
+
+            <br>For promotions & better shopping experience
+            <br>Available for Windows Phone & Android
+        </h3>
+    </div>
+    <div class="col-sm-3 download-con">
+        <a href="<?php echo $this->settingHelper('androidapp'); ?>" target="_blank" class="download">
+            <img title="Download for Android" src="<?php echo $this->basePath('catalog/img/dl-4-android.png'); ?>" />
+        </a>
+    </div>
+    <div class="col-sm-3 download-con">
+        <a href="<?php echo $this->settingHelper('windowsapp'); ?>" target="_blank" class="download">
+        <img title="Download for Windows" src="<?php echo $this->basePath('catalog/img/dl-4-win.png'); ?>" />
+         </a>
+    </div>
+</div>
+<style>
+    .download img{
+        height: 80px;
+        border:1px solid #fff;
+    }
+    .download-con{
+        padding: 1%;
+
+    }
+</style>

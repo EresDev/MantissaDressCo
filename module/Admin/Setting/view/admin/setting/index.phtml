@@ -1,0 +1,184 @@
+<?php
+$form = $this->entityform;
+$title = "Setting";
+echo $this->form()->openTag($form);
+$this->headTitle($title);
+;
+?>
+<h4>Setting<span style="float:right;">
+        <?php echo $this->formRow($form->get('submit')->setAttribute("class", "btn btn-primary")); ?>
+        <a class="btn btn-default" href="<?php echo $this->url("admin-account"); ?>">Cancel</a></span></h4>
+<hr>
+<?php if ($this->success_message){ ?>
+    <div class="alert alert-success" role="alert">
+        <?php echo $this->success_message; ?>
+    </div>
+<?php } ?>
+<?php
+foreach ($form as $element) {
+    if ($element->getName() == "submit") {
+        continue;
+    }
+
+    echo $this->formRow($element, null, false);
+    if ($this->formElementerrors($element)) {
+        echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($element) . '</div>';
+    }
+
+}
+
+echo $this->form()->closeTag();
+?>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input, .third-section > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .plus-minus {
+
+    }
+
+    .third-section > label, .third-section .alert-danger {
+        width: 75%;
+    }
+
+</style>
+<script>
+    $(document).ready(function(){
+        $("form").submit(function(){
+
+            var smpl =/^([1-9][0-9]*,)*[1-9][0-9]*$/;
+
+            if(!smpl.test($('input[name=featured_products]').val())){
+                alert("Featured products must be comma separated integers.");
+                $('input[name=featured_products]').focus();
+                return false;
+            }
+
+            if($('input[name=order_status_0]').val().replace(/ /g,'') == ""){
+                alert("Pending status value is required.");
+                $('input[name=order_status_0]').focus();
+                return false;
+            }
+
+            if($('input[name=order_status_1]').val().replace(/ /g,'') == ""){
+                alert("Complete status value is required.");
+                $('input[name=order_status_1]').focus();
+                return false;
+            }
+
+
+
+            if(parseInt($('input[name=new_arrival_count]').val()) < 1 || isNaN(parseInt($('input[name=new_arrival_count]').val()))){
+                alert("New arrival count must be a positive integer value.");
+                $('input[name=new_arrival_count]').focus();
+                return false;
+            }
+
+            if(parseFloat($('input[name=office_latitude]').val()) == 0 || isNaN(parseFloat($('input[name=office_latitude]').val()))){
+                alert("Latitude must be a numeric value with decimal points.");
+                $('input[name=office_latitude]').focus();
+                return false;
+            }
+            if(parseFloat($('input[name=office_longitude]').val()) == 0 || isNaN(parseFloat($('input[name=office_longitude]').val()))){
+                alert("Longitude must be a numeric value with decimal points.");
+                $('input[name=office_longitude]').focus();
+                return false;
+            }
+
+
+            try {
+                var t = new URL( $('input[name=site_url]').val() );
+
+            }
+            catch( e ) {
+                alert("Catalog URL is not valid.");
+                $('input[name=site_url]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=facebook]').val() );
+
+            }
+            catch( e ) {
+                alert("Facebook URL is not valid.");
+                $('input[name=facebook]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=twitter]').val() );
+
+            }
+            catch( e ) {
+                alert("Twitter URL is not valid.");
+                $('input[name=twitter]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=linkedin]').val() );
+
+            }
+            catch( e ) {
+                alert("Linkedin URL is not valid.");
+                $('input[name=linkedin]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=googleplus]').val() );
+
+            }
+            catch( e ) {
+                alert("Google Plus URL is not valid.");
+                $('input[name=googleplus]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=windowsapp]').val() );
+
+            }
+            catch( e ) {
+                alert("Windows App Download Link is not valid.");
+                $('input[name=windowsapp]').focus();
+                return false;
+            }
+
+            try {
+                var t = new URL( $('input[name=androidapp]').val() );
+
+            }
+            catch( e ) {
+                alert("Android App Download Link is not valid.");
+                $('input[name=androidapp]').focus();
+                return false;
+            }
+
+
+        });
+    });
+
+</script>
+

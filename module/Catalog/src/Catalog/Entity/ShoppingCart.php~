@@ -1,0 +1,52 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ShoppingCart
+ *
+ * @ORM\Table(name="shopping_cart", indexes={@ORM\Index(name="product_id", columns={"product_id"}), @ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Entity
+ */
+class ShoppingCart
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="shopping_cart_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $shoppingCartId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=false)
+     */
+    private $quantity = '1';
+
+    /**
+     * @var \Catalog\Entity\Product
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="product_id")
+     * })
+     */
+    private $product;
+
+    /**
+     * @var \Catalog\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     * })
+     */
+    private $user;
+
+
+}

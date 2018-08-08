@@ -1,0 +1,82 @@
+<nav role="navigation" class="navbar navbar-default">
+    <div class="navbar-header">
+
+        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+
+            <span class="sr-only">Toggle navigation</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+        </button>
+
+
+
+    </div>
+    <div id="navbarCollapse" class="collapse navbar-collapse">
+
+            <ul class="nav navbar-nav">
+                <?php foreach ($this->container as $page) { ?>
+                    <?php /* @var $page Zend\Navigation\Page\Mvc */ ?>
+                    <?php // when using partials we need to manually check for ACL conditions ?>
+                    <?php if (!$page->isVisible() || !$this->navigation()->accept($page)) { continue; } ?>
+                    <?php $hasChildren = $page->hasPages(); ?>
+                    <?php if (!$hasChildren) { ?>
+                        <li <?php if($page->isActive()) echo 'class="active"'?>>
+                            <a href="<?php echo $page->getHref() ?>">
+                                <?php echo $this->translate($page->getLabel()) ?>
+                            </a>
+                        </li>
+                    <?php } else { ?>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->translate($page->getLabel()) ?> <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <?php foreach ($page->getPages() as $child) { ?>
+                                    <?php // when using partials we need to manually check for ACL conditions ?>
+                                    <?php if(!$child->isVisible() || !$this->navigation()->accept($child)) { continue; } ?>
+                                    <li <?php if($child->isActive()) echo 'class="active"'?>>
+                                        <a href="<?php echo $child->getHref() ?>">
+                                            <?php echo $this->translate($child->getLabel()) ?>
+                                        </a>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        </li>
+                    <?php } ?>
+                <?php } ?>
+            </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <?php
+            if($this->identity()){
+                ?>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="<?php echo $this->url('account', array()); ?>">Dashboard</a></li>
+                        <li><a href="<?php echo $this->url('account', array('action' => 'orders')); ?>">My Orders</a></li>
+                        <li><a href="<?php echo $this->url('account', array('action' => 'history')); ?>">Login History</a></li>
+                        <li><a href="<?php echo $this->url('account', array('action' => 'update')); ?>">Personal Details</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li><a href="<?php echo $this->url('account', array('action' => 'changePassword')); ?>">Change Password</a></li>
+
+
+                    </ul>
+                </li>
+
+                <li><a href="<?php echo $this->url("logout", array(), array("force_canonical" => true)); ?>">Logout</a></li>
+            <?php
+            } else {
+                ?>
+                <li><a href="<?php echo $this->url("login", array(), array("force_canonical" => true)); ?>">Login</a></li>
+                <li><a href="<?php echo $this->url("register", array(), array("force_canonical" => true)); ?>">Register</a></li>
+
+            <?php } ?>
+        </ul>
+        </div>
+
+</nav>

@@ -1,0 +1,77 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OrderAddress
+ *
+ * @ORM\Table(name="order_address", uniqueConstraints={@ORM\UniqueConstraint(name="order_address", columns={"order_id"})})
+ * @ORM\Entity
+ */
+class OrderAddress
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="order_address_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $orderAddressId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="address1", type="string", length=128, nullable=false)
+     */
+    private $address1;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="address2", type="string", length=128, nullable=true)
+     */
+    private $address2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=128, nullable=false)
+     */
+    private $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="postcode", type="string", length=128, nullable=false)
+     */
+    private $postcode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=128, nullable=false)
+     */
+    private $state;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country", type="string", length=52, nullable=false)
+     */
+    private $country;
+
+    /**
+     * @var \Catalog\Entity\Order
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\Order")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="order_id", referencedColumnName="order_id")
+     * })
+     */
+    private $order;
+
+
+}

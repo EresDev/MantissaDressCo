@@ -1,0 +1,49 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Order
+ *
+ * @ORM\Table(name="order", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Entity
+ */
+class Order
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="order_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $orderId;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="order_datetime", type="datetime", nullable=false)
+     */
+    private $orderDatetime = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="ostatus", type="boolean", nullable=true)
+     */
+    private $ostatus = '0';
+
+    /**
+     * @var \Catalog\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     * })
+     */
+    private $user;
+
+
+}

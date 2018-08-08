@@ -1,0 +1,93 @@
+<?php
+/** @var \Zend\Form\Form $form */
+$form = $this->form;
+$form->setAttribute('method', 'post');
+$form->setAttribute('id', 'entityform');
+//echo $this->formCollection($form); exit;
+$title = "Add Review";
+echo $this->form()->openTag($form);
+$this->headTitle($title);
+?>
+
+<h4>Review >> Add<span style="float:right;">
+        <input class="btn btn-primary" type="submit" value="Save" />
+        <a class="btn btn-default" href="<?php echo $this->url("admin-information"); ?>">Cancel</a></span></h4>
+<hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<?php
+/** @var \Zend\Form\Element $element */
+foreach($form->getElements() as $element ){
+
+
+    $element->setLabel(preg_replace('/(?<!\ )[A-Z]/', ' $0', ucfirst($element->getName())));
+    if($element->getName() == "stars"){
+        $element->setLabel("Stars - 1 to 5");
+    }
+
+    echo $this->formRow($element, null, false);
+    if ($this->formElementerrors($element)) {
+        echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($element) . '</div>';
+    }
+}
+?>
+
+<?php
+echo $this->form()->closeTag();
+?>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .label-txt {
+        padding: 0px 15px ;
+    }
+    .thumb-container{
+        padding: 10px;
+    }
+    input[type=checkbox]{
+        float: left;display: inline; width: auto !important;
+    }
+
+</style>
+<script>
+    $(document).ready(function(){
+
+    });
+
+</script>

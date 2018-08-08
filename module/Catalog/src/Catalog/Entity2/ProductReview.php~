@@ -1,0 +1,63 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ProductReview
+ *
+ * @ORM\Table(name="product_review", indexes={@ORM\Index(name="product_id", columns={"product_id"})})
+ * @ORM\Entity
+ */
+class ProductReview
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="product_review_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $productReviewId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="review", type="string", length=250, nullable=false)
+     */
+    private $review;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="approved", type="boolean", nullable=true)
+     */
+    private $approved = '0';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reviewer_name", type="string", length=70, nullable=false)
+     */
+    private $reviewerName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stars", type="string", nullable=true)
+     */
+    private $stars = '5';
+
+    /**
+     * @var \Catalog\Entity\Product
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="product_id")
+     * })
+     */
+    private $product;
+
+
+}

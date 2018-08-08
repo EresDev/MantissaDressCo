@@ -1,0 +1,96 @@
+<?php
+use Zend\Form\Form;
+$title = "Send Newsletter";
+
+$this->headTitle($title);
+
+$form = new Form();
+$form->setAttribute("method" , 'post');
+$form->setAttribute("id" , 'entityform');
+$form->prepare();
+echo $this->form()->openTag($form);
+
+?>
+    <h4><?php echo $title; ?> <span style="float:right;"><input type="submit" class="btn btn-danger" value="Send" /></h4>
+    <hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<p>
+<strong>The newsletter will be sent to all the subscribed users.
+    HTML is allowed in the newsletter message.</strong>
+</p>
+    <label>
+    Subject
+  <input type="text" name="subject" class="form-control" value="<?php echo isset($_REQUEST['subject'])?$_REQUEST['subject']:""; ?>"/>
+
+</label>
+<label>
+    Message
+    <textarea name="message"  class="form-control"><?php echo isset($_REQUEST['message'])?$_REQUEST['message']:""; ?></textarea>
+</label>
+<?php
+echo $this->form()->closeTag();
+
+?>
+    <script>
+        jQuery(document).ready(function($){
+
+
+            $('form').submit(function(){
+                if(!window.confirm("We will send this newsletter to all subscribed users now. \nAre you sure?")){
+                    return false;
+                }
+            });
+        });
+    </script>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .label-txt {
+        padding: 0px 15px ;
+    }
+    .thumb-container{
+        padding: 10px;
+    }
+    input[type=checkbox]{
+        float: left;display: inline; width: auto !important;
+    }
+
+</style>
+

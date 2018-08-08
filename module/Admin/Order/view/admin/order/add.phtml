@@ -1,0 +1,233 @@
+<?php
+$form = $this->entityform;
+$title = "Add/Edit Order";
+echo $this->form()->openTag($form);
+$this->headTitle($title);
+$section_for = array(
+    //'order_product_id[]',
+    'title[]',
+    //'product_id[]',
+    'product_option_title[]',
+    'quantity[]',
+    'unit_price[]'
+);
+?>
+<h4>Orders >> Add/Edit<span style="float:right;">
+        <?php echo $this->formRow($form->get('submit')->setAttribute("class", "btn btn-primary")); ?>
+        <a class="btn btn-default" href="<?php echo $this->url("admin-order"); ?>">Cancel</a></span></h4>
+<hr>
+
+<?php
+echo $this->formHidden($form->get('order_id'));
+
+foreach ($form as $element) {
+    if ($element->getName() == "submit") {
+        continue;
+    }
+    if (in_array($element->getName(), $section_for)) {
+        echo '<div class="col-xs-3 third-section">';
+    }
+    echo $this->formRow($element, null, false);
+    if ($this->formElementerrors($element)) {
+        echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($element) . '</div>';
+    }
+    if (in_array($element->getName(), $section_for)) {
+        echo '</div>';
+    }
+}
+
+echo $this->form()->closeTag();
+?>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input, .third-section > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .plus-minus {
+
+    }
+
+    .third-section > label, .third-section .alert-danger {
+        width: 75%;
+    }
+
+</style>
+<script>
+    var products = null;
+    var products_json = null;
+    var product_option_json = {};
+    var task_buffer = {};
+    $(document).ready(function ($) {
+        $(".third-section:last").append("<a href='javascript:;' onclick='addProduct(this);' class='btn btn-default plus-minus'>+</a>");
+
+        $("input[name=order_datetime]").datetimepicker({
+            format: 'Y-m-d H:i:s',
+            maxDate:'+1970/01/01'
+        });
+        $.ajax('<?php echo $this->url("admin-product-ajax", array('action' => 'productLike'), array('force_canonical' => true)); ?>')
+            .done(function (_data) {
+                products_json = _data;
+                productsSetup(0);
+                $(".product_title").eq(0).trigger("change");
+
+                <?php if(isset($_POST['title'])){
+                        for($i=0; $i < count($_POST['title']); ++$i) {
+                    ?>
+                displayProduct("<?php echo $_POST['title'][$i]; ?>", "<?php echo $_POST['product_option_title'][$i]; ?>", "<?php echo $_POST['quantity'][$i]; ?>", "<?php echo $_POST['unit_price'][$i]; ?>",<?php echo $i == 0 ? 'true' : 'false' ?>);
+                <?php } } ?>
+
+                <?php if($this->orderProducts){
+                        foreach($this->orderProducts as $key => $product) {
+                    ?>
+                displayProduct("<?php echo $product->product_id; ?>", "<?php echo $product->product_option_title; ?>", "<?php echo $product->quantity; ?>", "<?php echo $product->unit_price; ?>",<?php echo $key == 0 ? 'true' : 'false' ?>);
+                <?php } } ?>
+                $(".third-section label").children().removeClass('form-control');
+            })
+            .fail(function () {
+                $("input[type=submit]").attr("disabled", "disabled");
+                alert("Request to server failed. Please refresh the page.");
+
+            });
+
+
+        $.ajax({
+            // A string containing the URL to which the request is sent.
+            url: '<?php echo $this->url("admin-user-ajax", array('action' => 'usersLike'), array('force_canonical' => true)); ?>',
+            //The type of data that you're expecting back from the server.
+            dataType: 'json',
+            //Function for showing data in search field.
+            success: function (data) {
+
+                $('input[name=email]').autocomplete(
+                    {
+                        source: data.email,
+                        minLength: 1
+                    });
+            }
+        });
+
+        $("#entityform").submit(function () {
+            var user = $('input[name=email]').val();
+            var parts = user.split(" (ID: ");
+            if(parts.length > 1){
+                var user_id = parseInt(parts[1].replace(")", ""));
+                if (typeof user_id != "number" || user_id <= 0) {
+                    alert("Invalid user. Try again.");
+                    return false;
+                }
+                else {
+                    $('input[name=user_id]').val(user_id);
+                    $('input[name=email]').val(parts[0]);
+                }
+            }
+            var is_valid = true;
+
+            if(is_valid){
+
+                $('.product_option_title').each(function(){
+                    if($(this).val().replace(/ /g,'') == ""){
+                        alert("Please insert product option.");
+                        is_valid = false;
+                        $(this).focus();
+                        return false;
+                    }
+                })
+            }
+            if(is_valid){
+                $('.quantity').each(function(){
+                    if($(this).val().replace(/ /g,'') == "" || isNaN(parseInt($(this).val())) || parseInt($(this).val()) < 1){
+                        alert("Please insert valid positive integer value for product quantity.");
+                        is_valid = false;
+                        $(this).focus();
+                        return false;
+                    }
+                });
+            }
+            return is_valid;
+        });
+
+
+    });
+    function addProduct(_obj) {
+        var html = //'<input type="hidden" value="" name="order_product_id[]">' +
+            //'<input type="hidden" value="" name="product_id[]">' +
+            '<div class="col-xs-3 third-section"><label><span>Product name (auto-fill)</span><input type="text" value="" class="product_title ui-autocomplete-input" name="title[]" autocomplete="off"></label></div>' +
+                '<div class="col-xs-3 third-section"><label><span>Product Option</span><input type="text" value="" name="product_option_title[]" class="product_option_title"></label></div>' +
+                '<div class="col-xs-3 third-section"><label><span>Quantity</span><input type="text" value="" name="quantity[]" class="quantity"></label></div>' +
+                '<div class="col-xs-3 third-section"><label><span>Unit Price</span><input type="text" value="" name="unit_price[]" class="unit_price"></label><a class="btn btn-default plus-minus" onclick="removeProduct(this);" href="javascript:;">-</a></div>';
+        jQuery(_obj).parent().after(html);
+        productsSetup(1);
+        $(".product_title").eq(1).trigger("change");
+
+
+    }
+    function removeProduct(_obj) {
+        jQuery(_obj).parent().prev().remove();
+        jQuery(_obj).parent().prev().remove();
+        jQuery(_obj).parent().prev().remove();
+        //jQuery(_obj).parent().prev().remove();
+        //jQuery(_obj).parent().prev().remove();
+        jQuery(_obj).parent().remove();
+
+    }
+
+    function productsSetup(title_index) {
+        var title_dropdown = "<select name='title[]' class='product_title' style='width: 200px;'>";
+        for (var i = 0; i < products_json.titles.length; ++i) {
+            title_dropdown += "<option value='" + products_json.ids[i] + "'>" + products_json.titles[i] + "</option>";
+        }
+        title_dropdown += "</select>";
+        $(".product_title").eq(title_index).replaceWith(title_dropdown);
+        $(".product_title").eq(title_index).change(function (event, ui) {
+
+            var pro_ind = products_json.ids.indexOf(jQuery(this).val());
+
+            jQuery(this).parent().parent().next().next().next().children(0).children(".unit_price").val(products_json.price[pro_ind]);
+
+
+
+        });
+
+    }
+
+        function displayProduct(title, option, qty, price, is_first){
+
+            var index = 1;
+            if(is_first){
+                index = 0;
+            }
+            else{
+                jQuery('.plus-minus:contains("+")').trigger("click");
+            }
+            jQuery('.product_title').eq(index).children('option[value=' + title + ']').prop('selected', true);
+
+
+            jQuery('.product_option_title').eq(index).val(option);
+
+
+            jQuery('.quantity').eq(index).val(qty);
+
+            jQuery('.unit_price').eq(index).val(price);
+
+
+        }
+</script>

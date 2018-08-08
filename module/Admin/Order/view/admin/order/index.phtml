@@ -1,0 +1,108 @@
+<?php
+use Zend\Form\Form;
+$title = "Orders";
+
+$this->headTitle($title);
+
+$form = new Form();
+$form->setAttribute("action" , $this->url("admin-order", array('action'=>'delete')));
+$form->setAttribute("method" , 'post');
+$form->prepare();
+echo $this->form()->openTag($form);
+
+?>
+<h4><?php echo $title; ?> <span style="float:right;"><a href="<?php echo $this->url("admin-order", array('action'=>'add')); ?>" class="btn btn-default">Add</a> <input type="submit" class="btn btn-danger" value="Delete" /></span></h4>
+<hr>
+<?php if ($this->success_message){ ?>
+    <div class="alert alert-success" role="alert">
+        <?php echo $this->success_message; ?>
+    </div>
+<?php } ?>
+<table class="table table-hover">
+
+    <thead>
+
+    <tr>
+        <th><input type="checkbox" name="allEntities" value="all"/></th>
+        <th>ID</th>
+
+        <th>Order By</th>
+
+        <th>DateTime</th>
+
+        <th>Total Price</th>
+
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+<?php
+foreach ($this->entities as $entity) {
+
+    ?>
+    <tr>
+        <td><input type="checkbox" name="entities[]" value="<?php echo $entity->order_id; ?>"/></td>
+            <td><?php echo $entity->order_id; ?></td>
+
+            <td>
+                <?php
+                echo $entity->email;
+
+                ?>
+            </td>
+
+            <td><?php echo $entity->order_datetime; ?></td>
+            <td><?php echo $entity->total_price; ?></td>
+            <td><a href="<?php echo $this->url("admin-order", array('action' => 'edit',"id" => $entity->order_id)); ?>" class="btn btn-default">Edit</a></td>
+
+        </tr>
+    <?php
+}
+?>
+    </tbody>
+    </table>
+<?php
+    echo $this->form()->closeTag();
+
+?>
+<script>
+    jQuery(document).ready(function($){
+        $("input[name=allEntities]").change(function(){
+
+            if($(this).is(":checked")){
+                $("input[type=checkbox]").prop('checked',true);
+
+            }
+            else{
+                $("input[type=checkbox]").prop('checked',false);
+
+            }
+        });
+        $("input[type=checkbox]").change(function(){
+           if(! $(this).is(":checked") ){
+               $("input[name=allEntities]").prop("checked", false);
+           }
+        });
+        $('form').submit(function(){
+            if(!window.confirm("All selected orders will be deleted.\nAre you sure?")){
+                return false;
+            }
+        });
+    });
+</script>
+
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->entities,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/paginator.phtml', 'Order'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'admin-order'
+    )
+);
+?>

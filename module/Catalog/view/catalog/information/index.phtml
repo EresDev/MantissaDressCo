@@ -1,0 +1,29 @@
+<?php
+$title = $this->entity->getTitle();
+$this->headTitle($title);
+$this->headMeta($this->entity->getMetaDescription(), "description");
+$this->headMeta($this->entity->getMetaKeywords(), "keywords");
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<div class="row">
+   <h3><?php echo $this->entity->getTitle(); ?></h3>
+    <hr>
+    <?php echo $this->entity->getContent(); ?>
+
+</div>

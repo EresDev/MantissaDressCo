@@ -1,0 +1,126 @@
+<?php
+use Zend\Form\Form;
+$title = "Colours";
+
+$this->headTitle($title);
+
+$form = new Form();
+$form->setAttribute("action" , $this->url("admin-colour", array('action'=>'delete')));
+$form->setAttribute("method" , 'post');
+$form->prepare();
+echo $this->form()->openTag($form);
+
+?>
+    <h4><?php echo $title; ?> <span style="float:right;"> <input type="submit" class="btn btn-danger" value="Delete" /></span></h4>
+    <hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+    <table class="table table-hover">
+
+        <thead>
+
+        <tr>
+            <th><input type="checkbox" name="allEntities" value="all"/></th>
+            <th>ID</th>
+            <th>Colour</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <?php
+        foreach ($this->colours as $entity) {
+
+            ?>
+            <tr>
+                <td><input type="checkbox" name="entities[]" value="<?php echo $entity->getProductColourId(); ?>"/></td>
+                <td><?php echo $entity->getProductColourId(); ?></td>
+                <td><?php echo $entity->getColourName(); ?></td>
+
+            </tr>
+        <?php
+        }
+        ?>
+        </tbody>
+    </table>
+<?php
+echo $this->form()->closeTag();
+
+?>
+<h3>Add a Colour</h3><hr>
+<form method="post" id="addcolour">
+    <label><span>Colour Name</span><br>
+        <input name="colour_name" />
+
+    </label><br>
+    <input type="submit" value="Save" />
+</form>
+    <script>
+        jQuery(document).ready(function($){
+            $("input[name=allEntities]").change(function(){
+
+                if($(this).is(":checked")){
+                    $("input[type=checkbox]").prop('checked',true);
+
+                }
+                else{
+                    $("input[type=checkbox]").prop('checked',false);
+
+                }
+            });
+            $("input[type=checkbox]").change(function(){
+                if(! $(this).is(":checked") ){
+                    $("input[name=allEntities]").prop("checked", false);
+                }
+            });
+
+
+            $('form').eq(0).submit(function(){
+                if(!window.confirm("Selected Colour/Colours will be removed.\nAre you sure?")){
+                    return false;
+                }
+            });
+
+            $("#addcolour").submit(function () {
+                var colourName = $('input[name=colour_name]').val().replace(/ /g,'');
+                if(colourName.length < 3){
+                    alert("Colour name can't be less than 3 characters.");
+                    return false;
+                }
+                if(colourName.length > 50){
+                    alert("Colour name can't be more than 50 characters.");
+                    return false;
+                }
+            });
+        });
+    </script>
+
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->colours,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/paginator.phtml', 'Colour'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'admin-colour'
+    )
+);
+?>

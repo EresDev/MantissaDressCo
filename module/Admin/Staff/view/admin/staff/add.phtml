@@ -1,0 +1,132 @@
+<?php
+/** @var \Zend\Form\Form $form */
+$form = $this->form;
+$form->setAttribute('method', 'post');
+$form->setAttribute('id', 'entityform');
+//echo $this->formCollection($form); exit;
+$title = "Add Staff";
+echo $this->form()->openTag($form);
+$this->headTitle($title);
+?>
+
+<h4>Staff >> Add<span style="float:right;">
+        <input class="btn btn-primary" type="submit" value="Save" />
+        <a class="btn btn-default" href="<?php echo $this->url("admin-staff"); ?>">Cancel</a></span></h4>
+<hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+<?php
+/** @var \Zend\Form\Element $element */
+foreach($form->getElements() as $element ){
+    if($element->getName() == 'password'){
+        $element->setAttribute('type', 'password');
+
+        if(isset($this->edit) && $this->edit){
+            $element->setLabel("Password - Leave empty if you don't want to change.");
+        }
+        else{
+            $element->setLabel("Password");
+        }
+
+    }
+    else{
+        $element->setLabel(ucfirst($element->getName()));
+    }
+    echo $this->formRow($element, null, false);
+    if ($this->formElementerrors($element)) {
+        echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($element) . '</div>';
+    }
+}
+?>
+
+<?php
+echo $this->form()->closeTag();
+?>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .label-txt {
+        padding: 0px 15px ;
+    }
+    .thumb-container{
+        padding: 10px;
+    }
+
+</style>
+<script>
+    $(document).ready(function(){
+        $("#entityform").submit(function () {
+            $(".alert-danger").remove();
+            var username = $("input[name=username]").val().replace(/ /g,'');
+            var email = $("input[name=email]").val().replace(/ /g,'');
+            var pass = $("input[name=password]").val().replace(/ /g,'');
+            if(email == ""){
+                showError("Email is required.", $("input[name=email]").get());
+                return false;
+            }
+            if(username == ""){
+                showError("Username is required.", $("input[name=username]").get());
+                return false;
+            }
+            if(username.length < 5){
+                showError("Username should be minimum 5 characters long.", $("input[name=username]").get());
+                return false;
+            }
+            if(!validateEmail(email)){
+                showError("Email is not valid.", $("input[name=email]").get());
+                return false;
+            }
+
+            <?php if(!(isset($this->edit) && $this->edit)){ ?>
+            if(pass == ""){
+                showError("Password is required.", $("input[name=password]").get());
+                return false;
+            }
+            if(pass.length < 5){
+                showError("Password should be minimum 5 characters long.", $("input[name=password]").get());
+                return false;
+            }
+            <?php } ?>
+        });
+    });
+    function validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+</script>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>jQuery Simple Lens v1.0.1 DEMO</title>
+
+    <link rel="stylesheet" type="text/css" href="css/jquery.simpleLens.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.simpleGallery.css">
+</head>
+
+<body>
+
+<article>
+    <h1>Demo with mouseenter - mouseleave</h1>
+    <div class="simpleLens-gallery-container" id="demo-1">
+        <div class="simpleLens-container">
+            <div class="simpleLens-big-image-container">
+                <a class="simpleLens-lens-image" data-lens-image="demo/large/benvado_elisa_bianco.jpg">
+                    <img src="demo/medium/benvado_elisa_bianco.jpg" class="simpleLens-big-image">
+                </a>
+            </div>
+        </div>
+
+        <div class="simpleLens-thumbnails-container">
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/benvado_elisa_bianco.jpg"
+               data-big-image="demo/medium/benvado_elisa_bianco.jpg">
+                <img src="demo/thumbnail/benvado_elisa_bianco.jpg">
+            </a>
+
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/camper_21926_red.jpg"
+               data-big-image="demo/medium/camper_21926_red.jpg">
+                <img src="demo/thumbnail/camper_21926_red.jpg">
+            </a>
+
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/flylondon_most_red.jpg"
+               data-big-image="demo/medium/flylondon_most_red.jpg">
+                <img src="demo/thumbnail/flylondon_most_red.jpg">
+            </a>
+        </div>
+    </div>
+</article>
+
+<article>
+    <h1>Demo with click - mouseleave</h1>
+
+    <div class="simpleLens-gallery-container" id="demo-2">
+        <div class="simpleLens-container">
+            <div class="simpleLens-big-image-container">
+                <a class="simpleLens-lens-image" data-lens-image="demo/large/benvado_elisa_bianco.jpg">
+                    <img src="demo/medium/benvado_elisa_bianco.jpg" class="simpleLens-big-image">
+                </a>
+            </div>
+        </div>
+
+        <div class="simpleLens-thumbnails-container">
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/benvado_elisa_bianco.jpg"
+               data-big-image="demo/medium/benvado_elisa_bianco.jpg">
+                <img src="demo/thumbnail/benvado_elisa_bianco.jpg">
+            </a>
+
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/camper_21926_red.jpg"
+               data-big-image="demo/medium/camper_21926_red.jpg">
+                <img src="demo/thumbnail/camper_21926_red.jpg">
+            </a>
+
+            <a href="#" class="simpleLens-thumbnail-wrapper"
+               data-lens-image="demo/large/flylondon_most_red.jpg"
+               data-big-image="demo/medium/flylondon_most_red.jpg">
+                <img src="demo/thumbnail/flylondon_most_red.jpg">
+            </a>
+        </div>
+    </div>
+</article>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script type="text/javascript" src="src/jquery.simpleGallery.js"></script>
+<script type="text/javascript" src="src/jquery.simpleLens.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
+            loading_image: 'demo/images/loading.gif'
+        });
+
+        $('#demo-1 .simpleLens-big-image').simpleLens({
+            loading_image: 'demo/images/loading.gif'
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#demo-2 .simpleLens-thumbnails-container img').simpleGallery({
+            loading_image: 'demo/images/loading.gif',
+            show_event: 'click'
+        });
+
+        $('#demo-2 .simpleLens-big-image').simpleLens({
+            loading_image: 'demo/images/loading.gif',
+            open_lens_event: 'click'
+        });
+    });
+</script>
+
+</body>
+</html>

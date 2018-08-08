@@ -1,0 +1,33 @@
+<?php
+
+$title = "Logout";
+$this->headTitle($title);
+
+?>
+<h4><?php echo $this->escapeHtml($title); ?></h4>
+<hr>
+<div class="row">
+    <div class="row">
+
+
+        <div class="alert alert-success" role="alert">
+            You have been successfully logged out. <a  href="<?php echo $this->url("admin", array('action' => 'login'), array('force_canonical' => true)); ?>">Click here</a> to login again.
+        </div>
+
+
+    </div>
+    <style>
+        #loginform label span, #loginform > input {
+            display: block;
+            width: 100%;
+        }
+
+        #loginform > label {
+            width: 100%;
+        }
+
+        #loginform > label > input {
+            width: 100%;
+        }
+    </style>
+

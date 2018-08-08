@@ -1,0 +1,125 @@
+<?php
+use Zend\Form\Form;
+$title = "Reviews";
+
+$this->headTitle($title);
+
+$form = new Form();
+$form->setAttribute("action" , $this->url("admin-review", array('action'=>'delete')));
+$form->setAttribute("method" , 'post');
+$form->prepare();
+echo $this->form()->openTag($form);
+
+?>
+    <h4><?php echo $title; ?> <span style="float:right;"><a href="<?php echo $this->url("admin-review", array('action'=>'add')); ?>" class="btn btn-default">Add</a> <input type="submit" class="btn btn-danger" value="Delete" /></span></h4>
+    <hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+    <table class="table table-hover">
+
+        <thead>
+
+        <tr>
+            <th><input type="checkbox" name="allEntities" value="all"/></th>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Reviewer Name</th>
+
+            <th>Stars</th>
+
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <?php
+        foreach ($this->paginator as $entity) {
+
+            ?>
+            <tr>
+                <td><input type="checkbox" name="entities[]" value="<?php echo $entity->getProductReviewId(); ?>"/></td>
+                <td><?php echo $entity->getProductReviewId(); ?></td>
+                <td><?php echo $entity->getProduct()->getTitle(); ?></td>
+
+                <td>
+                    <?php
+                    echo $entity->getReviewerName();
+
+                    ?>
+                </td>
+
+                <td>
+                    <?php
+                    echo $entity->getStars();
+
+                    ?>
+                </td>
+
+                <td><a href="<?php echo $this->url("admin-review", array('action' => 'edit',"id" => $entity->getProductReviewId())); ?>" class="btn btn-default">Edit</a></td>
+
+            </tr>
+        <?php
+        }
+        ?>
+        </tbody>
+    </table>
+<?php
+echo $this->form()->closeTag();
+
+?>
+    <script>
+        jQuery(document).ready(function($){
+            $("input[name=allEntities]").change(function(){
+
+                if($(this).is(":checked")){
+                    $("input[type=checkbox]").prop('checked',true);
+
+                }
+                else{
+                    $("input[type=checkbox]").prop('checked',false);
+
+                }
+            });
+            $("input[type=checkbox]").change(function(){
+                if(! $(this).is(":checked") ){
+                    $("input[name=allEntities]").prop("checked", false);
+                }
+            });
+
+            $('form').submit(function(){
+                if(!window.confirm("Selected product reviews will be removed.\nAre you sure?")){
+                    return false;
+                }
+            });
+        });
+    </script>
+
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->products,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/paginator.phtml', 'Reviews'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'admin-review'
+    )
+);
+?>

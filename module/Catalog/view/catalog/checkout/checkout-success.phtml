@@ -1,0 +1,110 @@
+<?php
+$title = "Thank you";
+$this->headTitle($title);
+
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+
+?>
+<div class="row">
+    <div class="col-md-6 ares-box">
+        <h3><?php echo $title; ?></h3>
+        <hr>
+        <p>Your order has been placed successfully. Find below the details of your order.</p>
+        <table class="table">
+            <tr>
+                <th><?php echo "Order ID:"; ?></th>
+                <td><?php echo $this->orderId; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Total Amount:"; ?></th>
+                <td><?php echo $this->settingHelper("currency_prefix").$this->totalAmount.$this->settingHelper("currency_postfix"); ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "First Name:"; ?></th>
+                <td><?php echo $this->post['firstname'];; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Last Name: "; ?></th>
+                <td><?php echo $this->post['lastname']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Shipping Address Line 1:"; ?></th>
+                <td><?php echo $this->post['address1']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Shipping Address Line 2"; ?></th>
+                <td><?php echo $this->post['address2']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "City"; ?></th>
+                <td><?php echo $this->post['city']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Postcode"; ?></th>
+                <td><?php echo $this->post['postcode']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "State"; ?></th>
+                <td><?php echo $this->post['state']; ?></td>
+            </tr>
+            <tr>
+                <th><?php echo "Country"; ?></th>
+                <td><?php echo $this->post['state']; ?></td>
+            </tr>
+
+        </table>
+        <p><strong>Note: </strong>In case of any issue, we will contact you on your email address or your phone number. Please keep your email address and phone number up-to-date in <a href="<?php echo $this->url("account", array(), array("force_canonical" => true));?>">your account</a>.</p>
+    </div>
+    <div class="col-md-6">
+        <h4><?php echo "Your Order"; ?></h4>
+        <hr>
+        <div class="cart-page">
+            <h4>Loading...</h4>
+        </div>
+
+    </div>
+</div>
+<style>
+    label span, label input, label{
+        display: block;
+        width: 100% ;
+    }
+    label span{
+        font-weight: normal;
+    }
+    .ares-box{
+        border-right: 1px dotted #000;
+    }
+    .newsletter label span, .newsletter label input, .newsletter label{
+        display: inline;
+        width: auto;
+
+    }
+    .newsletter label input[type=checkbox]{
+        float: left;
+        margin-top: -7px;
+        margin-right: 5px;
+    }
+
+</style>
+<?php
+$this->headScript()
+    ->prependFile($this->basePath() . '/catalog/js/checkout-success.js');
+

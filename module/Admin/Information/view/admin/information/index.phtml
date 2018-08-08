@@ -1,0 +1,132 @@
+<?php
+use Zend\Form\Form;
+$title = "Information";
+
+$this->headTitle($title);
+
+$form = new Form();
+$form->setAttribute("action" , $this->url("admin-information", array('action'=>'delete')));
+$form->setAttribute("method" , 'post');
+$form->prepare();
+echo $this->form()->openTag($form);
+
+?>
+    <h4><?php echo $title; ?> <span style="float:right;"><a href="<?php echo $this->url("admin-information", array('action'=>'add')); ?>" class="btn btn-default">Add</a> <input type="submit" class="btn btn-danger" value="Delete" /></span></h4>
+    <hr>
+<?php
+if($this->flashMessenger()->hasCurrentErrorMessages()){
+    foreach($this->flashMessenger()->getCurrentErrorMessages() as $msg){
+        echo '<div class="alert alert-danger" role="alert">'.$msg.'</div>';
+    }
+}
+
+?>
+<?php
+if($this->flashMessenger()->hasCurrentSuccessMessages()){
+    foreach($this->flashMessenger()->getCurrentSuccessMessages() as $msg){
+        echo '<div class="alert alert-success" role="alert">'.$msg.'</div>';
+    }
+
+}
+$this->flashMessenger()->clearCurrentMessagesFromContainer();
+?>
+    <table class="table table-hover">
+
+        <thead>
+
+        <tr>
+            <th><input type="checkbox" name="allEntities" value="all"/></th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Sort Order</th>
+
+            <th>Enabled</th>
+
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <?php
+        foreach ($this->paginator as $entity) {
+
+            ?>
+            <tr>
+                <td><input type="checkbox" name="entities[]" value="<?php echo $entity->getInformationPageId(); ?>"/></td>
+                <td><?php echo $entity->getInformationPageId(); ?></td>
+                <td><?php echo $entity->getTitle(); ?></td>
+
+                <td>
+                    <?php
+                    echo $entity->getSortOrder();
+
+                    ?>
+                </td>
+
+                <td>
+                    <?php
+                    echo ($entity->getEnabled() == 1 ? "Yes" : "No");
+
+                    ?>
+                </td>
+
+                <td><a href="<?php echo $this->url("admin-information", array('action' => 'edit',"id" => $entity->getInformationPageId())); ?>" class="btn btn-default">Edit</a></td>
+
+            </tr>
+        <?php
+        }
+        ?>
+        </tbody>
+    </table>
+<?php
+echo $this->form()->closeTag();
+
+?>
+    <script>
+        jQuery(document).ready(function($){
+            $("input[name=allEntities]").change(function(){
+
+                if($(this).is(":checked")){
+                    $("input[type=checkbox]").prop('checked',true);
+
+                }
+                else{
+                    $("input[type=checkbox]").prop('checked',false);
+
+                }
+            });
+            $("input[type=checkbox]").change(function(){
+                if(! $(this).is(":checked") ){
+                    $("input[name=allEntities]").prop("checked", false);
+                }
+            });
+
+            $("input[type=checkbox]").each(function(){
+                var _val = parseInt($(this).val());
+                if(_val >= 6 && _val <=12){
+
+                    $(this).remove();
+                }
+            });
+            $('form').submit(function(){
+                if(!window.confirm("Selected information pages will be removed.\nAre you sure?")){
+                    return false;
+                }
+            });
+        });
+    </script>
+
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->products,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/paginator.phtml', 'Information'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'admin-information'
+    )
+);
+?>

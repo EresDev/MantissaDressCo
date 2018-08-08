@@ -1,0 +1,149 @@
+<?php
+$form = $this->categoryform;
+echo $this->form()->openTag($form);
+$this->headTitle("Add Category");
+?>
+<h4>Categories >> Add<span style="float:right;">
+        <?php echo $this->formRow($form->get('submit')->setAttribute("class", "btn btn-primary")); ?>
+        <a class="btn btn-default" href="<?php echo $this->url("admin-category"); ?>">Cancel</a></span></h4>
+<hr>
+
+<?php
+
+    echo $this->formRow($form->get('title'), null, false);
+    if($this->formElementerrors($form->get('title'))){
+        echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('title')).'</div>';
+    }
+    echo $this->formRow($form->get('barcode'), null, false);
+    if($this->formElementerrors($form->get('barcode'))){
+        echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('barcode')).'</div>';
+    }
+?>
+<div class="input-group">
+<?php
+echo $this->formRow($form->get('image'), null, false);
+?>
+    <span class="input-group-btn">
+<a href="<?php echo $this->url("home"); ?>ResponsiveFilemanager/filemanager/dialog.php?type=1&field_id=category_image" class="btn btn-default select_image">Select</a>
+</span>
+    </div>
+        <?php
+if($this->formElementerrors($form->get('image'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('image')).'</div>';
+}
+    echo $this->formRow($form->get('description'), null, false);
+if($this->formElementerrors($form->get('description'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('description')).'</div>';
+}
+
+    echo $this->formRow($form->get('meta_title'), null, false);
+if($this->formElementerrors($form->get('meta_title'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('meta_title')).'</div>';
+}
+    echo $this->formRow($form->get('meta_description'), null, false);
+if($this->formElementerrors($form->get('meta_description'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('meta_description')).'</div>';
+}
+    echo $this->formRow($form->get('meta_keyword'), null, false);
+if($this->formElementerrors($form->get('meta_keyword'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('meta_keyword')).'</div>';
+}
+    echo $this->formRow($form->get('sort_order'), null, false);
+if($this->formElementerrors($form->get('sort_order'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('sort_order')).'</div>';
+}
+    echo $this->formRow($form->get('parent_category_id'), null, false);
+    if($this->formElementerrors($form->get('parent_category_id'))){
+        echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('parent_category_id')).'</div>';
+    }
+     ?>
+<div>
+    The parent category will appear in menu.<br>
+    The first child category will appear in dropdown in menu, and parent will not be clickable link in this case.<br>
+    After first child, further nesting can be accessible with URL as <?php echo $this->settingHelper("site_url"); ?>/products/[CATEGORY_ID]<br>
+</div>
+<?php
+    echo $this->formRow($form->get('enabled'), null, false);
+if($this->formElementerrors($form->get('enabled'))){
+    echo '<div class="alert alert-danger" role="alert">'.$this->formElementerrors($form->get('enabled')).'</div>';
+}
+    echo $this->form()->closeTag();
+?>
+<style>
+    #categoryform label span, #categoryform > input {
+        display: block;
+
+    }
+
+    #categoryform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #categoryform > label > input {
+        width: 100%;
+    }
+    #categoryform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+    textarea{width:100%;}
+
+
+</style>
+<?php
+    $this->headLink()->prependStylesheet($this->basePath() . '/js/fancybox/source/jquery.fancybox.css')
+?>
+<?php echo $this->headScript()
+        ->prependFile($this->basePath() . '/js/tinymce/tinymce.min.js')
+        ->prependFile($this->basePath() . '/js/fancybox/source/jquery.fancybox.js'); ?>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.select_image').fancybox({
+            'width'	: 880,
+            'height'	: 570,
+            'type'	: 'iframe',
+            'autoScale'   : false
+        });
+        tinymce.init({
+            selector: "#description",
+            theme: "modern",
+            plugins: [
+                "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars insertdatetime media code nonbreaking",
+                "table contextmenu directionality emoticons paste textcolor responsivefilemanager"
+            ],
+            toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+            toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor  | print preview code ",
+            image_advtab: true ,
+
+            external_filemanager_path:"<?php echo $this->url("home"); ?>ResponsiveFilemanager/filemanager/",
+            filemanager_title:"File Manager" ,
+            external_plugins: { "filemanager" : "<?php echo $this->url("home"); ?>ResponsiveFilemanager/filemanager/plugin.min.js"}
+        });
+
+        $('form').eq(0).submit(function(){
+            removeErrors();
+            var is_valid = true;
+            var elements = [
+                $("input[name=title]"),
+                $("input[name=barcode]"),
+                $("input[name=sort_order]")
+            ];
+            $(elements).each(function(){
+                if( $(this).val().replace(/ /g,'') == ""){
+                    showError('empty', this);
+                    is_valid = false;
+                }
+
+            });
+            var sort = $("input[name=sort_order]").val();
+            if(isNaN(sort)){
+                showError("int", $("input[name=sort_order]").get());
+                is_valid = false;
+            }
+            return is_valid;
+        });
+    });
+</script>

@@ -1,0 +1,49 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ProductAttribute
+ *
+ * @ORM\Table(name="product_attribute", indexes={@ORM\Index(name="product_id", columns={"product_id"})})
+ * @ORM\Entity
+ */
+class ProductAttribute
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="product_attribute_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $productAttributeId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="attribute_key", type="string", length=50, nullable=true)
+     */
+    private $attributeKey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="attrinute_value", type="string", length=50, nullable=true)
+     */
+    private $attrinuteValue;
+
+    /**
+     * @var \Catalog\Entity\Product
+     *
+     * @ORM\ManyToOne(targetEntity="Catalog\Entity\Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="product_id")
+     * })
+     */
+    private $product;
+
+
+}

@@ -1,0 +1,71 @@
+<?php
+$title = "Account";
+$this->headTitle($title);
+
+?>
+
+
+        <div class="col-xs-6">
+            <h3>Personal Information</h3>
+
+            <table class="table table-responsive table-bordered">
+            <tr>
+                <th>First Name: </th>
+                <td><?php echo $this->details->getFirstname(); ?></td>
+            </tr>
+                <tr>
+                    <th>Last Name: </th>
+                    <td><?php echo $this->details->getLastname(); ?></td>
+                </tr>
+                <tr>
+                    <th>Address Line 1: </th>
+                    <td><?php echo $this->details->getAddress1(); ?></td>
+                </tr>
+                <tr>
+                    <th>Address Line 2: </th>
+                    <td><?php echo $this->details->getAddress2(); ?></td>
+                </tr>
+                <tr>
+                    <th>City: </th>
+                    <td><?php echo $this->details->getCity(); ?></td>
+                </tr>
+                <tr>
+                    <th>Postcode: </th>
+                    <td><?php echo $this->details->getPostcode(); ?></td>
+                </tr>
+                <tr>
+                    <th>State: </th>
+                    <td><?php echo $this->details->getState(); ?></td>
+                </tr>
+                <tr>
+                    <th>Country: </th>
+                    <td><?php echo $this->details->getCountry(); ?></td>
+                </tr>
+
+                <tr>
+                    <th>Phone Number: </th>
+                    <td><?php echo $this->details->getTelephone(); ?></td>
+                </tr>
+                <tr><td colspan="2" class="text-right"><a href="#">Modify Personal Information</a></td></tr>
+
+            </table>
+        </div>
+
+        <div class="account-container col-xs-6">
+            <h3>Recent Logs</h3>
+
+
+            <table class="table table-responsive table-bordered">
+                <tr>
+                    <th>Datetime</th>
+                    <th>IP Address</th>
+                </tr>
+                <?php
+                foreach($this->history as $his){
+                    echo '<tr><td>'.$his->getDateTime()->format('l, F d Y h:i A').'</td><td>'.$his->getIp().'</td></tr>';
+                }
+                ?>
+                <tr><td colspan="2" class="text-right"><a href="<?php echo $this->url('account', array('action' => 'history')); ?>">View Complete Logs</a></td></tr>
+            </table>
+        </div>
+<div style="clear:both"></div>

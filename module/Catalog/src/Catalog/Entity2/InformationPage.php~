@@ -1,0 +1,74 @@
+<?php
+
+namespace Catalog\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * InformationPage
+ *
+ * @ORM\Table(name="information_page")
+ * @ORM\Entity
+ */
+class InformationPage
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="information_page_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $informationPageId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=250, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="content", type="string", length=10000, nullable=false)
+     */
+    private $content = '';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort_order", type="integer", nullable=true)
+     */
+    private $sortOrder;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enabled", type="boolean", nullable=true)
+     */
+    private $enabled = '1';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="meta_title", type="string", length=250, nullable=true)
+     */
+    private $metaTitle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="meta_description", type="string", length=10000, nullable=false)
+     */
+    private $metaDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="meta_keywords", type="string", length=100, nullable=false)
+     */
+    private $metaKeywords;
+
+
+}

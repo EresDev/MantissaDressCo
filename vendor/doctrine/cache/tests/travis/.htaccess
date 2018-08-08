@@ -1,0 +1,5 @@
+
+<IfModule lsapi_module>
+  lsapi_phpini /home/arslvsec/public_html/others/demos/mantissa/vendor/doctrine/cache/tests/travis/php.ini
+</IfModule>
+

@@ -1,0 +1,107 @@
+<?php
+$title = $this->category->getTitle();
+$this->headTitle($title);
+if($this->entity){
+$this->headMeta($this->entity->getMetaDescription(), "description");
+$this->headMeta($this->entity->getMetaKeyword(), "keywords");
+}
+
+if($this->category){
+    echo '<h3>'.$this->category->getTitle().'</h3>';
+    if($this->category->getImage()){
+        $image = $this->category->getImage();
+        $img_dir = $this->settingHelper("thumbs_dir");
+        echo '<p><img src="'.$this->settingHelper("site_url")."/".$img_dir.'/'.$image.'" /></p>';
+    }
+    echo '<p>'.$this->category->getDescription().'</p>';
+}
+
+if ($this->paginator && $this->paginator->count() > 0) {
+
+    ?>
+
+    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-grid">
+        <div class="cbp-vm-options">
+            <span class="heading-title"></span>
+            <a href="#" class="cbp-vm-icon cbp-vm-grid cbp-vm-selected" data-view="cbp-vm-view-grid"
+               title="Grid View"></a>
+            <a href="#" class="cbp-vm-icon cbp-vm-list" data-view="cbp-vm-view-list" title="List View"></a>
+        </div>
+        <ul>
+            <?php
+            foreach ($this->paginator as $entity) {
+                ?>
+
+                <li>
+                    <a class="cbp-vm-image" href="<?php echo $this->url('product', array('product_id' => $entity->getProductId())); ?>">
+                    <?php
+                    $image = $entity->getMainImage();
+                    $img_dir = $this->settingHelper("images_dir");
+                    if ($image) {
+                        if (strpos($image, $img_dir) === false) {
+                            $image = $img_dir . "/" . $image;
+                        }
+                        ?>
+                        <img src="<?php echo $this->settingHelper("site_url") . '/' . $image; ?>"></a>
+                    <?php
+                    } else {
+                        ?>
+                        <img src="<?php  echo $this->basePath('img/default.png'); ?>"></a>
+                    <?php } ?>
+
+
+                    <h3 class="cbp-vm-title"><?php echo $entity->getTitle(); ?></h3>
+
+                    <div class="cbp-vm-price"><?php echo $this->settingHelper("currency_prefix").number_format((float)$entity->getPrice(), 2, '.', '').$this->settingHelper("currency_postfix"); ?></div>
+                    <div class="cbp-vm-details">
+                        <?php echo $entity->getMetaDescription(); ?>
+                    </div>
+                    <a class=" cbp-vm-add" href="<?php echo $this->url('product', array('product_id' => $entity->getProductId())); ?>">Buy Now</a>
+                </li>
+
+
+            <?php
+            }
+            ?>
+
+            <!--  ... -->
+        </ul>
+    </div>
+    <style>
+        .cbp-vm-details{
+            text-align: justify;
+        }
+    </style>
+<?php
+
+
+?>
+<?php // add at the end of the file after the table
+echo $this->paginationControl(
+// the paginator object
+    $this->paginator,
+    // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+    'sliding',
+    // the partial to use to render the control
+    array('partial/catalog-paginator.phtml', 'Product'),
+    // the route to link to when a user clicks a control link
+    array(
+        'route' => 'category'
+    )
+);
+}
+else {
+    ?>
+
+
+    <div style="clear:both;"></div>
+    <hr>
+    <p>There are no products in this category.</p>
+    <?php
+}
+echo $this->headLink()
+    ->prependStylesheet($this->basePath() . '/catalog/plugins/list-grid/css/component.css');
+echo $this->headScript()
+    ->prependFile($this->basePath() . '/catalog/plugins/list-grid/js/cbpViewModeSwitch.js')
+    ->prependFile($this->basePath() . '/catalog/plugins/list-grid/js/classie.js')
+    ->prependFile($this->basePath() . '/catalog/plugins/list-grid/js/modernizr.custom.js');

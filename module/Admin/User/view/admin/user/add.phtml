@@ -1,0 +1,58 @@
+<?php
+$form = $this->entityform;
+$title = "Add User";
+echo $this->form()->openTag($form);
+$this->headTitle($title);
+?>
+<h4>Users >> Add<span style="float:right;">
+        <?php echo $this->formRow($form->get('submit')->setAttribute("class", "btn btn-primary")); ?>
+        <a class="btn btn-default" href="<?php echo $this->url("admin-user"); ?>">Cancel</a></span></h4>
+<hr>
+
+<?php
+echo $this->formHidden($form->get('user_id'));
+
+foreach ($form as $element) {
+    if($element->getName() == "submit"){
+        continue;
+    }
+    echo $this->formRow($element, null, false);
+    if ($this->formElementerrors($element)) {
+        echo '<div class="alert alert-danger" role="alert">' . $this->formElementerrors($element) . '</div>';
+    }
+}
+
+echo $this->form()->closeTag();
+?>
+<style>
+    #entityform label span, #entityform > input {
+        display: block;
+
+    }
+
+    #entityform > label {
+        width: 100%;
+        font-weight: normal;
+    }
+
+    #entityform > label > input {
+        width: 100%;
+    }
+
+    #entityform > label > input[type=radio] {
+        width: auto;
+        display: inline;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .label-txt {
+        padding: 0px 15px ;
+    }
+    .thumb-container{
+        padding: 10px;
+    }
+
+</style>
